@@ -84,7 +84,8 @@ const LoginPage = () => {
                         
                         console.log("User ID from token:", decodedPayload.userId);
                         console.log("Organization ID from token:", decodedPayload.organizationId);
-                        
+
+                        localStorage.setItem()
                         localStorage.setItem("userId", decodedPayload.userId);
                         localStorage.setItem("organizationId", decodedPayload.organizationId);
                     } catch (tokenError) {

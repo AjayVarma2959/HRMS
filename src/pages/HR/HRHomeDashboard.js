@@ -182,8 +182,8 @@ const fetchEmployeeData = async(org_id) => {
       return;
     }
     
-    const response = await axios(localAxiosGet(`organization/getAllEmployeesByOrganizationId/${org_id}`, token));    
-    if(response.data && response.data.status === "SUCCESS" && response.data.message && response.data.message.employees) {
+    const response = await axios(localAxiosGet(`/organization/getAllEmployeesByOrganizationId/?organization_id=${org_id}`, token));
+      if(response.data && response.data.status === "SUCCESS" && response.data.message && response.data.message.employees) {
       const employeesData = response.data.message.employees;
       console.log('Extracted employees data:', employeesData);
       

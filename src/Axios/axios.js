@@ -76,16 +76,34 @@ export const localAxiosPut = (endpoint, data, contentType = "application/json") 
 });
 
 // Function for GET API requests
+// export const localAxiosGet = (endpoint, token = null, contentType = "application/json") => {
+//   const config = {
+//     method: "GET",
+//     url: `${axiosInstance.defaults.baseURL}${endpoint}`, // Base URL + endpoint
+//     headers: {
+//       "Content-Type": contentType, // Dynamic Content-Type
+//     },
+//   };
+  
+//   // Add authorization token if provided
+//   if (token) {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+  
+//   return config;
+// };
 export const localAxiosGet = (endpoint, token = null, contentType = "application/json") => {
+  // Ensure endpoint starts with a slash
+  const formattedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  
   const config = {
     method: "GET",
-    url: `${axiosInstance.defaults.baseURL}${endpoint}`, // Base URL + endpoint
+    url: `${axiosInstance.defaults.baseURL}${formattedEndpoint}`,
     headers: {
-      "Content-Type": contentType, // Dynamic Content-Type
+      "Content-Type": contentType,
     },
   };
   
-  // Add authorization token if provided
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

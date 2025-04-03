@@ -591,7 +591,7 @@ export default function EmployeeManagement({ setSelectedMenu }) {
                     <TableCell sx={{ color: "#fff" }}>Department</TableCell>
                     <TableCell sx={{ color: "#fff" }}>Team</TableCell>
                     <TableCell sx={{ color: "#fff" }}>Designation</TableCell>
-                    <TableCell sx={{ color: "#fff" }}>Grade</TableCell>
+                    {/* <TableCell sx={{ color: "#fff" }}>Grade</TableCell> */}
                     <TableCell sx={{ color: "#fff" }}>Status</TableCell>
                     <TableCell sx={{ color: "#fff" }}>Actions</TableCell>
                   </TableRow>
