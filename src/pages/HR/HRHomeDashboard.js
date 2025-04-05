@@ -53,19 +53,20 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend,
 
 const localizer = momentLocalizer(moment);
 
-export default function HRHomeDashboard({setSelectedMenu}) {
-  
-  const [userId,setUserId] = useState(null);
-  const[organizationId,setOrganizationId] = useState(null);
+export default function HRHomeDashboard({ setSelectedMenu }) {
+
+  const [userId, setUserId] = useState(null);
+  const [organizationId, setOrganizationId] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
-  useEffect(()=>{
+  useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
     const storedOrgId = localStorage.getItem("organizationId");
     const storedUserDetails = localStorage.getItem("userDetails");
     if (storedUserId) setUserId(storedUserId);
     if (storedOrgId) {
-      setOrganizationId(storedOrgId)};
-      fetchEmployeeData(storedOrgId);
+      setOrganizationId(storedOrgId)
+    };
+    fetchEmployeeData(storedOrgId);
     if (storedUserDetails) {
       try {
         setUserDetails(JSON.parse(storedUserDetails));
@@ -80,11 +81,11 @@ export default function HRHomeDashboard({setSelectedMenu}) {
       // fetchAttendanceData(storedOrgId);
       // etc.
     }
-  },[])
+  }, [])
   const handleNavigateToEmployees = () => {
     setSelectedMenu("Employee Management");
   };
-  const handleNavigateToAttendance = () =>{
+  const handleNavigateToAttendance = () => {
     setSelectedMenu("Attendance and Time Tracking")
   }
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -118,8 +119,8 @@ export default function HRHomeDashboard({setSelectedMenu}) {
     setIsDialogOpen(false);
   }
   const [searchTerm, setSearchTerm] = useState("");
-  const[employeeData,setEmployeeData] = useState([]);
-  const [loadingEmployeeData,setLoadingEmployeeData] = useState(false)
+  const [employeeData, setEmployeeData] = useState([]);
+  const [loadingEmployeeData, setLoadingEmployeeData] = useState(false)
   const [filterStatus, setFilterStatus] = useState("all");
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
@@ -156,49 +157,49 @@ export default function HRHomeDashboard({setSelectedMenu}) {
   //   },
   // ];
 
-// useEffect(()=>{
-//   const storeUserId = localStorage.getItem("userId");
-//   const storedOrgId = localStorage.getItem("organizationId")
-//   const storedUserDetails = localStorage.getItem("userDetails");
-//   if(storedOrgId){
-//     setUserId(storeUserId)
-//   }
-//   if(storedOrgId){
-//     setOrganizationId(storedOrgId)
-//   }
-//   if(storedUserDetails){
-//     setUserDetails(storedUserDetails)
-//   }
+  // useEffect(()=>{
+  //   const storeUserId = localStorage.getItem("userId");
+  //   const storedOrgId = localStorage.getItem("organizationId")
+  //   const storedUserDetails = localStorage.getItem("userDetails");
+  //   if(storedOrgId){
+  //     setUserId(storeUserId)
+  //   }
+  //   if(storedOrgId){
+  //     setOrganizationId(storedOrgId)
+  //   }
+  //   if(storedUserDetails){
+  //     setUserDetails(storedUserDetails)
+  //   }
 
-// })
-const fetchEmployeeData = async(org_id) => {
-  try {
-    setLoadingEmployeeData(true);
-    const token = localStorage.getItem('accessToken');
-    console.log('Fetching employees for organization ID:', org_id);
-    
-    if(!org_id) {
-      console.error('Organization ID not found');
-      return;
-    }
-    
-    const response = await axios(localAxiosGet(`/organization/getAllEmployeesByOrganizationId/?organization_id=${org_id}`, token));
-      if(response.data && response.data.status === "SUCCESS" && response.data.message && response.data.message.employees) {
-      const employeesData = response.data.message.employees;
-      console.log('Extracted employees data:', employeesData);
-      
-      setEmployeeData(employeesData);
-    } else {
-      console.error('Unexpected API response structure:', response.data);
+  // })
+  const fetchEmployeeData = async (org_id) => {
+    try {
+      setLoadingEmployeeData(true);
+      const token = localStorage.getItem('accessToken');
+      console.log('Fetching employees for organization ID:', org_id);
+
+      if (!org_id) {
+        console.error('Organization ID not found');
+        return;
+      }
+
+      const response = await axios(localAxiosGet(`/organization/getAllEmployeesByOrganizationId/:organization_id/?organization_id=${org_id}`, token));
+      if (response.data && response.data.status === "SUCCESS" && response.data.message && response.data.message.employees) {
+        const employeesData = response.data.message.employees;
+        console.log('Extracted employees data:', employeesData);
+
+        setEmployeeData(employeesData);
+      } else {
+        console.error('Unexpected API response structure:', response.data);
+        setEmployeeData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching employee data:", error);
       setEmployeeData([]);
-    } 
-  } catch (error) {
-    console.error("Error fetching employee data:", error);
-    setEmployeeData([]);
-  } finally {
-    setLoadingEmployeeData(false); 
-  }
-};
+    } finally {
+      setLoadingEmployeeData(false);
+    }
+  };
   const departmentDistributionData = {
     labels: ["Frontend", "Backend", "UI/UX", "Database"],
     datasets: [
@@ -282,19 +283,20 @@ const fetchEmployeeData = async(org_id) => {
     const email = (employee.email || '').toLowerCase();
     const designation = String(employee.designation || '').toLowerCase();
     const status = (employee.status || '').toLowerCase();
-    
-    const matchesSearchTerm = 
+
+    const matchesSearchTerm =
       name.includes(searchTerm.toLowerCase()) ||
       email.includes(searchTerm.toLowerCase()) ||
       designation.includes(searchTerm.toLowerCase());
-  
-    const matchesStatus = filterStatus === "all" || 
+
+    const matchesStatus = filterStatus === "all" ||
       (filterStatus === "Active" && status === "active") ||
       (filterStatus === "InActive" && status === "inactive");
-  
+
+
     return matchesSearchTerm && matchesStatus;
   });
-  
+
 
 
   const paginatedEmployeeData = filteredEmployeeData.slice((page - 1) * rowsPerPage, page * rowsPerPage);
@@ -329,14 +331,14 @@ const fetchEmployeeData = async(org_id) => {
               <MenuItem value="Freelancer">Freelancer</MenuItem>
             </Select>
           </FormControl>
-          
+
         </Box>
       </Box>
 
 
       <Grid container spacing={3} marginBottom={3}>
         <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ borderRadius: 2, boxShadow: 3, backgroundColor: '#E3F2FD',cursor:"pointer" }} onClick={handleNavigateToEmployees}>
+          <Card sx={{ borderRadius: 2, boxShadow: 3, backgroundColor: '#E3F2FD', cursor: "pointer" }} onClick={handleNavigateToEmployees}>
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6" fontWeight="bold" color="#2196F3">
@@ -352,7 +354,7 @@ const fetchEmployeeData = async(org_id) => {
           </Card>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
-          <Card sx={{ borderRadius: 2, boxShadow: 3, backgroundColor: '#FFF3E0',cursor:"pointer" }} onClick={handleNavigateToAttendance}>
+          <Card sx={{ borderRadius: 2, boxShadow: 3, backgroundColor: '#FFF3E0', cursor: "pointer" }} onClick={handleNavigateToAttendance}>
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6" fontWeight="bold" color="#FF9800">
@@ -515,59 +517,59 @@ const fetchEmployeeData = async(org_id) => {
               </TableRow>
             </TableHead>
             <TableBody>
-            {paginatedEmployeeData.map((employee) => (
-  <TableRow key={employee.id} hover>
-    <TableCell sx={{ fontWeight: '500' }}>{employee.id}</TableCell>
-    <TableCell>
-      <Box display="flex" alignItems="center">
-        <Avatar sx={{
-          marginRight: 1,
-          bgcolor: employee.status && employee.status.toLowerCase() === "active" ? '#4CAF50' : '#FF9800',
-          fontWeight: 'bold'
-        }}>
-          {employee.first_name ? employee.first_name.charAt(0) : '?'}
-        </Avatar>
-        {`${employee.first_name || ''} ${employee.last_name || ''}`}
-      </Box>
-    </TableCell>
-    <TableCell>{employee.email}</TableCell>
-    <TableCell>
-      {typeof employee.designation === 'number' 
-        ? `Designation ID: ${employee.designation}` 
-        : employee.designation || 'N/A'}
-    </TableCell>
-    <TableCell>
-      <Button
-        size="small"
-        variant="contained"
-        color={employee.status && employee.status.toLowerCase() === "active" ? "success" : "warning"}
-        sx={{
-          textTransform: "capitalize",
-          '& .MuiButton-startIcon': { mr: 0.5 }
-        }}
-        startIcon={employee.status && employee.status.toLowerCase() === "active" ?
-          <CheckCircle /> : <Cancel />
-        }
-      >
-        {employee.status}
-      </Button>
-    </TableCell>
-    <TableCell>
-      <Box display="flex" gap={1}>
-        <Button
-          size="small"
-          color="secondary"
-          variant="contained"
-          startIcon={<Edit />}
-          sx={{ minWidth: 90 }}
-          onClick={() => handleEditEmployee(employee)}
-        >
-          Edit
-        </Button>
-      </Box>
-    </TableCell>
-  </TableRow>
-))}
+              {paginatedEmployeeData.map((employee) => (
+                <TableRow key={employee.id} hover>
+                  <TableCell sx={{ fontWeight: '500' }}>{employee.id}</TableCell>
+                  <TableCell>
+                    <Box display="flex" alignItems="center">
+                      <Avatar sx={{
+                        marginRight: 1,
+                        bgcolor: employee.status && employee.status.toLowerCase() === "active" ? '#4CAF50' : '#FF9800',
+                        fontWeight: 'bold'
+                      }}>
+                        {employee.first_name ? employee.first_name.charAt(0) : '?'}
+                      </Avatar>
+                      {`${employee.first_name || ''} ${employee.last_name || ''}`}
+                    </Box>
+                  </TableCell>
+                  <TableCell>{employee.email}</TableCell>
+                  <TableCell>
+                    {typeof employee.designation === 'number'
+                      ? `Designation ID: ${employee.designation}`
+                      : employee.designation || 'N/A'}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      color={employee.status && employee.status.toLowerCase() === "active" ? "success" : "warning"}
+                      sx={{
+                        textTransform: "capitalize",
+                        '& .MuiButton-startIcon': { mr: 0.5 }
+                      }}
+                      startIcon={employee.status && employee.status.toLowerCase() === "active" ?
+                        <CheckCircle /> : <Cancel />
+                      }
+                    >
+                      {employee.status}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Box display="flex" gap={1}>
+                      <Button
+                        size="small"
+                        color="secondary"
+                        variant="contained"
+                        startIcon={<Edit />}
+                        sx={{ minWidth: 90 }}
+                        onClick={() => handleEditEmployee(employee)}
+                      >
+                        Edit
+                      </Button>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
