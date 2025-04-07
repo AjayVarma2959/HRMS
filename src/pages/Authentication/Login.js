@@ -31,7 +31,7 @@ const LoginPage = () => {
         
         setFormError("");
         setIsLoading(true);
-        const startTime = Date.now(); // Record when we started loading
+        const startTime = Date.now(); 
         
         const data = {
             email: email,
