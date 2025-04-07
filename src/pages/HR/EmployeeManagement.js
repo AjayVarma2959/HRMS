@@ -32,9 +32,12 @@ import {
   Radio,
   RadioGroup,
   FormLabel, Checkbox,
-  Avatar
+  Avatar,
+  Tab
 
 } from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -61,6 +64,7 @@ import {
 } from "@mui/icons-material";
 import { localAxios } from "../../Axios/axios";
 import { localAxiosGet } from "../../Axios/axios";
+import { Delete } from "lucide-react";
 
 const mockApi = {
   employees: [
@@ -130,7 +134,7 @@ export default function EmployeeManagement({ setSelectedMenu }) {
       isTeamLead: false
     });
   };
-  const[searchTerm,setSeatchTerm]= useState("");
+  const [searchTerm, setSeatchTerm] = useState("");
   const [loadingTeams, setLoadingTeams] = useState(false);
   const [loadingDesignations, setLoadingDesignations] = useState(false)
   const [designations, setDesignations] = useState([])
@@ -353,25 +357,25 @@ export default function EmployeeManagement({ setSelectedMenu }) {
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
 
- const filterdEmployesData = employees.filter((employee)=>{
-  const name = `${employee.first_name || ''} ${employee.last_name}`.toLowerCase();
-  const department = (employee.department || '').toLowerCase()
-  const email = (employee.email || '').toLowerCase()
-  const team = (employee.team || '').toLowerCase()
-  const designation = (employee.designation || '').toLowerCase()
-  const status = (employee.status || '').toLowerCase();
+  const filterdEmployesData = employees.filter((employee) => {
+    const name = `${employee.first_name || ''} ${employee.last_name}`;
+    const department = (employee.department || '')
+    const email = (employee.email || '').toLowerCase()
+    const team = (employee.team || '')
+    const designation = (employee.designation || '').toLowerCase()
+    const status = (employee.status || '').toLowerCase();
 
-  const matchesSearchTerm = 
-  name.includes(searchTerm.toLowerCase())
-  email.includes(searchTerm.toLowerCase())
-  designation.includes(searchTerm.toLowerCase())
-  const matchesStatus = filterStatus === "all" ||
-  (filterStatus === "Active" && status === "active") ||
-  (filterStatus === "InActive" && status === "inactive")
+    const matchesSearchTerm =
+      name.includes(searchTerm.toLowerCase())
+    email.includes(searchTerm.toLowerCase())
+    designation.includes(searchTerm.toLowerCase())
+    const matchesStatus = filterStatus === "all" ||
+      (filterStatus === "Active" && status === "active") ||
+      (filterStatus === "InActive" && status === "inactive")
 
-  return matchesSearchTerm && matchesStatus;
- })
- const paginatedEmployeeData = filterdEmployesData.slice((page-1) * rowsPerPage,page*rowsPerPage)
+    return matchesSearchTerm && matchesStatus;
+  })
+  const paginatedEmployeeData = filterdEmployesData.slice((page - 1) * rowsPerPage, page * rowsPerPage)
 
   const handleDepartmentChange = (e) => {
     const selectedDeptId = e.target.value;
@@ -559,7 +563,7 @@ export default function EmployeeManagement({ setSelectedMenu }) {
             <TableContainer component={Paper}>
               <Table>
                 <TableHead sx={{
-                  height:"40px"
+                  height: "40px"
                 }}>
                   <TableRow
                     sx={{
@@ -585,32 +589,38 @@ export default function EmployeeManagement({ setSelectedMenu }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {paginatedEmployeeData.map((employe)=>(
-                    <TableRow key={employe.id} hover>
-                      <TableCell sx={{ fontWeight: '500' }}>{employe.id}</TableCell>
-                      <TableCell>
-                        <Box display="flex" alignItems="center">
-                          <Avatar sx={{marginRight:1,
-                          bgcolor:employe.status && employe.status.toLowerCase() === "active" ? '#4CAF50': '#FF9800',fontWeight:'bold'}}>
-                            {employe.first_name ? employe.first_name.charAt(0): '?'}
-                          </Avatar>
-                          {`${employe.first_name || ''}${employe.last_name || ''}`}
-                        </Box>
-                      </TableCell>
-                      <TableCell>{typeof employe.designation === 'number' ?
-                      `Designition ID:${employe.designition}`:employe.designition || 'N?A'}</TableCell>
-                      <TableCell>{employe.team}</TableCell> 
-                      <TableCell>{employe.designation}</TableCell>
-                      <TableCell>
-                        <Button size="small" variant='contained' color={employe.status && employe.status.toLowerCase() === "active"?"Success":"warning"} sx={{
+                  {employees.map((employee) => (
+                    <TableRow key={employee.id}>
+                      <TableCell>{employee.id}</TableCell>
+                      <TableCell>{employee.first_name}{employee.last_name}</TableCell>
+                      <TableCell>{employee.department || '-'}</TableCell>
+                      <TableCell>{employee.team || '-'}</TableCell>
+                      <TableCell>{employee.designation || '-'}</TableCell>
+                      <TableCell>{
+                        <Button 
+                        size="small" 
+                        variant="contained" 
+                        color={employee.status && employee.status.toLowerCase()==='active' ? 'success':'warning'} 
+                        sx={{
                           textTransform:"capitalize",
-                          '& .MuiButton-startIcon':{mr:0.5}
-                        }} startIcon={employe.status && employe.staus.toLowerCase() === "active" ? <CheckCircle /> : <Cancel />}></Button>
-
+                          '& .muiButton-startIcon':{mr:0.5}
+                        }} 
+                        startIcon={employee.status && employee.status.toLowerCase() ==='active'? <CheckCircle /> :<Cancel />}
+                      >
+                        {employee.status}
+                      </Button>
+                      }</TableCell>
+                      <TableCell>
+                        <IconButton aria-label="edit">
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton aria-label="delete">
+                          <DeleteIcon />
+                        </IconButton>
                       </TableCell>
-                    </TableRow>
-                  ))}
-                  
+                    </TableRow>))}
+
+
 
 
 
@@ -620,7 +630,7 @@ export default function EmployeeManagement({ setSelectedMenu }) {
 
           </CardContent>
         </Card>
-        <Card sx={{ boxShadow: 3 }}>
+        {/* <Card sx={{ boxShadow: 3 }}>
           <CardHeader title="Employee List" />
           <CardContent>
             <TableContainer component={Paper}>
@@ -683,7 +693,7 @@ export default function EmployeeManagement({ setSelectedMenu }) {
               />
             </Box>
           </CardContent>
-        </Card>
+        </Card> */}
 
 
         <Dialog

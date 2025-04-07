@@ -35,7 +35,8 @@ import {
   Business,
   Person,
   Visibility,
-  Edit
+  Edit,
+  Delete
 } from "@mui/icons-material";
 import axios from "axios";
 
